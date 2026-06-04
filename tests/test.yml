@@ -1,0 +1,6 @@
+---
+- hosts: website
+  remote_user: user
+  become: true
+  roles:
+    - website
