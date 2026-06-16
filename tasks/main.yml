@@ -3,6 +3,7 @@
   tags:
     - always
   ansible.builtin.service_facts:
+
 - name: Web statick
   tags:
     - website
@@ -14,10 +15,12 @@
         return_content: true
       failed_when: false
       register: website_result_ping
+
     - name: Ping debug
       ansible.builtin.debug:
         var: website_result_ping
-    - name: Past templates website
+
+    - name: Past templates website by systemd
       ansible.builtin.template:
         src: "{{ website_template_web_src }}"
         dest: "{{ website_web_dest }}"
@@ -29,3 +32,30 @@
         vector_state: "{{ ansible_facts.services['vector.service'].state }}"
         clickhouse_server: "{{ website_result_ping.url }}"
         clickhouse_ping: "{{ website_result_ping.content }}"
+      when: website_use_systemd
+
+    - name: Ckeck state nginx
+      ansible.builtin.shell: >
+        pidof -c nginx > /dev/null 2>&1 && echo "running" || echo "stopped"
+      register: check_nginx
+      failed_when: false
+      changed_when: false
+
+    - name: Ckeck state vector
+      ansible.builtin.shell: >
+        pidof -c vector > /dev/null 2>&1 && echo "running" || echo "stopped"
+      register: check_vector
+      failed_when: false
+      changed_when: false
+
+    - name: Past templates website not by systemd
+      ansible.builtin.template:
+        src: "{{ website_template_single_src }}"
+        dest: "{{ website_web_dest }}"
+        mode: "{{ website_dir_mode }}"
+      vars:
+        nginx_state: "{{ check_nginx.stdout }}"
+        vector_state: "{{ check_vector.stdout }}"
+        clickhouse_server: "{{ website_result_ping.url }}"
+        clickhouse_ping: "{{ website_result_ping.content }}"
+      when: not website_use_systemd

@@ -1,2 +1,5 @@
+---
 website_web_dest: "/usr/share/nginx/html/index.html"
 website_clickhouse_server: "http://127.0.0.1:8123"
+
+website_use_systemd: true

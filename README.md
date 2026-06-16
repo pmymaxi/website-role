@@ -12,6 +12,7 @@ Role Variables
 | ------------------------------ | ---------------------------------------- | ---------------------------------- |
 |  `website_web_dest`            | Path для стартовой web страницы index    | `/usr/share/nginx/html/index.html` |
 |  `website_clickhouse_server`   | Адрес clickhouse server                  | `http://127.0.0.1:8123`            |
+|  `website_use_systemd`         | Параметр определяет использовании systemd| `true`                             |
 
 
 Example Playbook
