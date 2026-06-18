@@ -33,6 +33,7 @@
         clickhouse_server: "{{ website_result_ping.url }}"
         clickhouse_ping: "{{ website_result_ping.content }}"
       when: website_use_systemd
+      changed_when: false
 
     - name: Ckeck state nginx
       ansible.builtin.shell: >
@@ -59,3 +60,4 @@
         clickhouse_server: "{{ website_result_ping.url }}"
         clickhouse_ping: "{{ website_result_ping.content }}"
       when: not website_use_systemd
+      changed_when: false
